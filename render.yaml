@@ -1,0 +1,25 @@
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: media-manager-api
+    runtime: node
+    region: singapore
+    plan: free
+    rootDir: apps/api
+    buildCommand: npm install -g pnpm && pnpm install && pnpm db:generate && pnpm build
+    startCommand: pnpm db:push && node dist/main.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: AZURE_STORAGE_ACCOUNT_NAME
+        sync: false
+      - key: AZURE_STORAGE_ACCOUNT_KEY
+        sync: false
+      - key: AZURE_CDN_ENDPOINT
+        sync: false
