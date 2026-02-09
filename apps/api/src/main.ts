@@ -8,24 +8,11 @@ async function bootstrap() {
   // Global prefix for all routes
   app.setGlobalPrefix('api');
 
-  // Enable CORS for frontend
-  const allowedOrigins = [
-    'http://localhost:3000',
-    'https://upload-media-web.vercel.app',
-    process.env.FRONTEND_URL,
-  ].filter(Boolean);
-
+  // Enable CORS for all origins (can be restricted later)
   app.enableCors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.some(allowed => origin.startsWith(allowed!) || origin.includes('vercel.app'))) {
-        callback(null, true);
-      } else {
-        callback(null, true); // Allow all for now to debug
-      }
-    },
+    origin: true, // Allow all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true,
   });
 
