@@ -1,0 +1,105 @@
+// Prisma schema for Media Manager
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  lastIp    String?  @map("last_ip")
+
+  uploads   Upload[]
+  downloads Download[]
+
+  @@map("sessions")
+}
+
+model Album {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  coverMediaId String? @map("cover_media_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  coverMedia  Media?   @relation("AlbumCover", fields: [coverMediaId], references: [id], onDelete: SetNull)
+  media       AlbumMedia[]
+  uploads     Upload[]
+
+  @@map("albums")
+}
+
+model Media {
+  id           String   @id @default(uuid())
+  filename     String
+  mimeType     String   @map("mime_type")
+  size         BigInt
+  width        Int?
+  height       Int?
+  blobPath     String   @map("blob_path")
+  thumbnailPath String? @map("thumbnail_path")
+  metadata     Json     @default("{}")
+  status       String   @default("processing")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  albums       AlbumMedia[]
+  albumCovers  Album[]  @relation("AlbumCover")
+
+  @@map("media")
+}
+
+model AlbumMedia {
+  albumId  String   @map("album_id")
+  mediaId  String   @map("media_id")
+  position Int      @default(0)
+  addedAt  DateTime @default(now()) @map("added_at")
+
+  album    Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  media    Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@id([albumId, mediaId])
+  @@map("album_media")
+}
+
+model Upload {
+  id           String   @id @default(uuid())
+  sessionId    String?  @map("session_id")
+  albumId      String?  @map("album_id")
+  filename     String
+  totalSize    BigInt   @map("total_size")
+  uploadedBytes BigInt  @default(0) @map("uploaded_bytes")
+  status       String   @default("pending")
+  blockIds     Json     @default("[]") @map("block_ids")
+  blobPath     String?  @map("blob_path")
+  expiresAt    DateTime? @map("expires_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  session      Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  album        Album?   @relation(fields: [albumId], references: [id], onDelete: SetNull)
+
+  @@map("uploads")
+}
+
+model Download {
+  id        String   @id @default(uuid())
+  sessionId String?  @map("session_id")
+  mediaIds  Json     @map("media_ids")
+  status    String   @default("pending")
+  zipPath   String?  @map("zip_path")
+  size      BigInt?
+  expiresAt DateTime? @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  session   Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@map("downloads")
+}

@@ -1,0 +1,45 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: media-manager-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: media_manager
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis (optional, for sessions/rate limiting)
+  redis:
+    image: redis:7-alpine
+    container_name: media-manager-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+
+  # Azurite - Azure Storage Emulator for local development
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: media-manager-storage
+    ports:
+      - "10000:10000" # Blob service
+      - "10001:10001" # Queue service
+      - "10002:10002" # Table service
+    volumes:
+      - azurite_data:/data
+    command: "azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 -l /data"
+
+volumes:
+  postgres_data:
+  redis_data:
+  azurite_data:

@@ -1,0 +1,32 @@
+{
+  "name": "media-manager",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Web-based media management system for uploading and organizing images/videos",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "dev:web": "pnpm --filter @media-manager/web dev",
+    "dev:api": "pnpm --filter @media-manager/api dev",
+    "build": "pnpm -r build",
+    "build:web": "pnpm --filter @media-manager/web build",
+    "build:api": "pnpm --filter @media-manager/api build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "db:migrate": "pnpm --filter @media-manager/api db:migrate",
+    "db:generate": "pnpm --filter @media-manager/api db:generate"
+  },
+  "keywords": [
+    "media",
+    "upload",
+    "gallery",
+    "azure",
+    "blob-storage"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@10.27.0+sha512.72d699da16b1179c14ba9e64dc71c9a40988cbdc65c264cb0e489db7de917f20dcf4d64d8723625f2969ba52d4b7e2a1170682d9ac2a5dcaeaab732b7e16f04a"
+}
