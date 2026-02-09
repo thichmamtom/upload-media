@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Use edge runtime for better performance and longer timeout
-export const runtime = 'edge';
+// Use Node.js runtime with extended timeout
+export const maxDuration = 60; // 60 seconds for Hobby plan
 
 const API_URL = process.env.API_URL || 'https://upload-media-nsji.onrender.com';
 
