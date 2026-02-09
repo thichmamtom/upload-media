@@ -1,9 +1,6 @@
 // API Client for Media Manager
-// In production (Vercel), use relative URLs to hit Next.js API routes (proxy)
-// In development, call the NestJS API directly
-const API_BASE = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-  ? '' // Production: use relative URL (Next.js API proxy)
-  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001');
+// Frontend uses relative /api/* paths which get rewritten by next.config.mjs
+const API_BASE = '';
 
 interface ApiError {
   message: string;
